@@ -1,10 +1,11 @@
 #include <Key.h>
-Key on(11), off(10), ok(15);
 extern  short freq[];
 #include "Speaker.h"
 Speaker spk(12);
 #include "Bar.h"
 Bar bar;
+
+Key on(11), off(10), ok(15);
 
 void demo() {
   for (int i=0 ; i<=20 ; ++i) {
@@ -21,17 +22,39 @@ void demo() {
 
 void setup() {  
   //spk.playMml("CDEFGABC"); delay(100);
-  demo();
+  //demo();
+
+  for (int i=0 ; i<10 ; ++i) {
+    pinMode(i, OUTPUT);
+  }
+  for (int i=10 ; i<20 ; ++i) {
+    pinMode(i, INPUT);
+    digitalWrite(i, HIGH); // pull-up
+  }  
 }
 
-void loop() {
+void loop() { 
+  for (int i=0 ; i<10 ; ++i) {
+    int hl = (( HIGH != digitalRead(i + 10) ) ? HIGH : LOW);
+    digitalWrite(i, hl);
+  }  
+  delay(16);
+}
+
+
+void loop2() {
   static int ct = 0;
   ct++;
 
-  if ( on.update() ) {
-    spk.beep(7);
-    for (int i=0 ; i<10 ; ++i)
+  //if ( on.update() ) {
+  if ( HIGH == digitalRead(13) ) {
+    //spk.beep(7);
+    for (int i=9 ; i<10 ; ++i)
       digitalWrite(i, HIGH);
+    delay(30);
+    for (int i=9 ; i<10 ; ++i)
+      digitalWrite(i, LOW);
+    delay(1000);
   }
 
   if ( off.update() ) {
@@ -40,6 +63,7 @@ void loop() {
 
   ok.update();
   if ( ok.getState() ) {
+
     spk.beep(ct%12);
     for (int i=0 ; i<10 ; ++i)
       digitalWrite(i, (random(5)==1 ? HIGH : LOW ));
