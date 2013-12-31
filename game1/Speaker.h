@@ -1,4 +1,5 @@
-#include <Key.h>
+ #include "arduino.h"
+
 
 class Speaker {
   char mPin;
